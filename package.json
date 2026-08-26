@@ -1,0 +1,17 @@
+{
+    "name": "high-concurrency-chat-server",
+    "version": "1.0.0",
+    "description": "High-concurrency Real-Time Chat & Streaming Server built with Fastify and WebSockets",
+    "main": "server.js",
+    "scripts":
+    {
+        "start": "node server.js",
+        "dev": "node --watch server.js"
+    },
+    "dependencies": 
+    {
+        "@fastify/env": "^5.0.0",
+        "@fastify/websocket": "^11.0.0",
+        "fastify": "^5.0.0"
+    }
+}
