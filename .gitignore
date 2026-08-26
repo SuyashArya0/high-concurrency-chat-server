@@ -1,0 +1,18 @@
+# Node Modules
+.env
+*.log
+
+# Fedora/Linux system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Ignore all local history of files
+**/.history   
