@@ -1,6 +1,6 @@
 const envSchema = {
     type: 'object',
-    requirede: ['PORT', 'HOST', 'HEARTBEAT_INTERVAL'],
+    required: ['PORT', 'HOST', 'HEARTBEAT_INTERVAL'],
     properties: {
         PORT: { type: 'number', default: 3000 },
         HOST: { type: 'string', default: '0.0.0.0' },
