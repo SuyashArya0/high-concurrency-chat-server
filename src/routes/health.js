@@ -12,10 +12,10 @@ async function healthRoutes(fastify)
                 }
             }
         }
-    }, async () => {
+    }, async (request) => {
         return {
             status: 'ok',
-            timestamp: Date.now()
+            timestamp: request.startTime
         };
     });
 }
