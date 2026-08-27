@@ -14,7 +14,14 @@ async function websocketRoutes(fastify)
     });
 
     fastify.get('/ws', { websocket: true }, (connection, req) => {
-        const socket = connection.socket;
+        const socket = connection.socket || connection;
+
+        if(!socket)
+        {
+            fastify.log.error('WebSocket connection object is undefined');
+            return;
+        }
+        
         socket.isAlive = true;
 
         socket.on('pong', () => {
