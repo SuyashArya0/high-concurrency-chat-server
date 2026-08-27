@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 class RoomManager
 {
     constructor()
@@ -6,44 +8,69 @@ class RoomManager
         this.rooms = new Map();
     }
 
-    join(room, socket)
+    createRoom(title)
     {
-        if(!this.rooms.has(room))
-            this.rooms.set(room, new Set());
+        let roomId;
+        do
+        {
+            roomId = crypto.randomBytes(4).toString('hex'); // e.g. "a1b2c3d4"
+        } while(this.rooms.has(roomId));
 
-        this.rooms.get(room).add(socket);
-        socket.currentRoom = room;
+        this.rooms.set(roomId, {
+            title: title || 'Untitled Room',
+            clients: new Set()
+        });
+
+        return { roomId, title: this.rooms.get(roomId).title };
+    }
+
+    join(roomId, socket)
+    {
+        if(!this.rooms.has(roomId))
+            return false;
+
+        this.rooms.get(roomId).clients.add(socket);
+        socket.currentRoom = roomId;
+
+        return true;
     }
 
     leave(socket)
     {
-        const room = socket.currentRoom;
-        if(room && this.rooms.has(room))
+        const roomId = socket.currentRoom;
+        if(roomId && this.rooms.has(roomId))
         {
-            const clients = this.rooms.get(room);
-            clients.delete(socket);
+            const room = this.room.get(roomId);
 
-            if(clients.size === 0)
-                this.rooms.delete(room);
+            croom.clients.delete(socket);
+
+            if(room.clients.size === 0)
+                this.rooms.delete(roomId);
         }
 
         socket.currentRoom = null;
     }
 
-    broadcast(room, senderSocket, payload)
+    broadcast(roomId, senderSocket, payload)
     {
-        if(!this.rooms.has(room)) return;
+        if(!this.rooms.has(roomId))
+            return;
 
         const message = JSON.stringify(payload);
-        for(const client of this.rooms.get(room))
+        for(const client of this.rooms.get(roomId).clients)
             if(client !== senderSocket && client.readyState === 1) // 1 = OPEN
                 client.send(message);
     }
 
-    getRoomStats(room)
+    getRoomStats(roomId)
     {
+        if(!this.rooms.has(roomId))
+            return null;
+
+        const room = this.rooms.get(roomId);
         return {
-            activeClients: this.rooms.has(room) ? this.rooms.get(room).size : 0
+            title: room.title,
+            activeClients: room.clients.size
         };
     }
 }

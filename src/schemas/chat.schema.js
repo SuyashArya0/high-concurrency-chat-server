@@ -4,7 +4,7 @@ const messageSchema = {
     properties: {
         action: {
             type: 'string',
-            enum: ['join', 'message', 'stream_chunk']
+            enum: ['create', 'join', 'message', 'stream_chunk']
         },
         room: {
             type: 'string',

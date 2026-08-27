@@ -21,7 +21,7 @@ async function websocketRoutes(fastify)
             fastify.log.error('WebSocket connection object is undefined');
             return;
         }
-        
+
         socket.isAlive = true;
 
         socket.on('pong', () => {
@@ -53,13 +53,35 @@ async function websocketRoutes(fastify)
 
             switch(data.action)
             {
+                case 'create':
+                    const { roomId, title } = roomManager.createRoom(data.payload);
+                    roomManager.leave(socket);
+                    roomManager.join(roomId, socket);
+
+                    socket.send(JSON.stringify({
+                        event: 'created',
+                        roomId,
+                        title,
+                        stats: roomManager.getRoomStats(roomId)
+                    }));
+                    break;
+
                 case 'join':
                     roomManager.leave(socket);
-                    roomManager.join(data.room, socket);
+                    const joined = roomManager.join(data.room, socket);
+
+                    if(!joined)
+                    {
+                        socket.send(JSON.stringify({ error: 'Room does not exist. Check your Room ID' }));
+                        return;
+                    }
+
+                    const stats = roomManager.getRoomStats(data.room);
                     socket.send(JSON.stringify({
                         event: 'joined',
                         room: data.room,
-                        stats: roomManager.getRoomStats(data.room)
+                        title: stats.title,
+                        stats
                     }));
                     break;
 
