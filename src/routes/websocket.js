@@ -1,10 +1,13 @@
+const Ajv = require('ajv');
+
 const roomManager = require('../services/roomManager');
 const { messageSchema } = require('../schemas/chat.schema.js');
 
+const ajv = new Ajv();
+const validateMessage = ajv.compile(messageSchema);
+
 async function websocketRoutes(fastify)
 {
-    const validate = fastify.ajv.compile(messageSchema);
-
     //Fastify onRequest Hook for time-stamping incoming requests
     fastify.addHook('onRequest', async (request) => {
         request.startTime = Date.now();
@@ -31,11 +34,11 @@ async function websocketRoutes(fastify)
             }
 
             // Manual schema validation check against defined rules
-            if(!validate(data))
+            if(!validateMessage(data))
             {
                 socket.send(JSON.stringify({
                     error: 'Schema validation failed',
-                    details: validate.errors
+                    details: validateMessage.errors
                 }));
 
                 return;
