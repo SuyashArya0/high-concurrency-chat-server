@@ -48,7 +48,7 @@ high-concurrency-chat-server/
 ### Installation
 1. **Clone the repository**:
 ```text
-git clone [https://github.com/your-username/high-concurrency-chat-server.git](https://github.com/your-username/high-concurrency-chat-server.git)
+git clone [https://github.com/SuyashArya0/high-concurrency-chat-server.git](https://github.com/SuyashArya0/high-concurrency-chat-server.git)
 cd high-concurrency-chat-server
 ```
 
